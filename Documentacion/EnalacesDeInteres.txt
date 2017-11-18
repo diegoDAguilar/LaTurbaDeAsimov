@@ -1,0 +1,3 @@
+ExplicacionBOW: https://ianlondon.github.io/blog/visual-bag-of-words/
+ImplementacionEnOpenCV: http://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_feature2d/py_features_meaning/py_features_meaning.html
+Proyecto GIT con BOW hecho: https://github.com/bikz05/bag-of-words
