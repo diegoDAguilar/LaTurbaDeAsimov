@@ -14,13 +14,15 @@ from sklearn.datasets import make_blobs
 from sklearn.svm import SVC
 
 #Cargado de las 70 imágenes que se encuentran en el directorio raíz
-raiz="Nodo1_Img"
+raiz="Nodo"
+numero_nodos=3
 img_list=[]
-for i in range(0,70):
-    file_name=raiz+str(i+1)+".png"
-    img=cv2.imread(file_name,0)
-    img = cv2.resize(img,(800,400))
-    img_list.append(img)
+for g in range(1,numero_nodos+1):    
+    for i in range(0,70):
+        file_name=raiz+str(g)+"_Img"+str(i+1)+".png"
+        img=cv2.imread(file_name,0)
+        img = cv2.resize(img,(800,400))
+        img_list.append(img)
 
 #Detección y cálculo de puntos ORB en las imágenes
 des_array=np.zeros((1,32))
@@ -34,34 +36,47 @@ for p in img_list:
 des_array=np.delete(des_array,0,0)
 
 #Clustering KMeans
-clusters=10
+clusters=8
 kmeans=KMeans(n_clusters=clusters,random_state=0).fit(des_array)
 labels=kmeans.labels_
 
-#Cálculo de histogramas
-labels2=kmeans.predict(des_list[0])
-
-training_data_array=np.zeros((1,10))
+#Cálculo de histogramas y generación del training set
+training_data_array=np.zeros((1,clusters+1))
+count=0
+clase_nodo=1
 for f in des_list:
     training_data=np.zeros((1,clusters))
     labels=kmeans.predict(f)
     for j in labels:
         training_data[0,j]+=1
+    
+    if count==70:
+        count=0
+        clase_nodo+=1
+        training_data=np.append(training_data,np.array([clase_nodo]))
+    else:
+        training_data=np.append(training_data,np.array([clase_nodo]))
+    
+    count+=1
     training_data_array=np.vstack((training_data_array,training_data))
 
-#Generación del training set para el classificador    
 training_data_array=np.delete(training_data_array,0,0)
-classes=1*np.ones((70,1))
-training_data_array=np.append(training_data_array,classes,axis=1)
 
 #Entrenamiento del clasificador SVM
 clf=SVC()
-clf.fit(training_data_array[:,0:10],training_data_array[:,10])
+clf.fit(training_data_array[:,0:clusters],training_data_array[:,clusters])
 
-"""FALTA METERLE EL RESTO DE NODOS, POR EL MOMENTO EL SVM BOTARÁ ERROR
-PORQUE NO FUNCIONA SOLO CON UNA SOLA CLASE"""
+#Testeo del clasificador con dos imágenes imagen
 
+img2=cv2.imread("Imagen testeo no honesto 3.png",0)
+img2=cv2.resize(img2,(800,400))
+kp2,des2=orb.detectAndCompute(img2,None)
+labels2=kmeans.predict(des2)
+training_data2=np.zeros((1,clusters))
+for j in labels2:
+    training_data2[0,j]+=1
 
+print(clf.predict(training_data2))
 
 
 """
