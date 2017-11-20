@@ -1,3 +1,5 @@
 ExplicacionBOW: https://ianlondon.github.io/blog/visual-bag-of-words/
 ImplementacionEnOpenCV: http://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_feature2d/py_features_meaning/py_features_meaning.html
 Proyecto GIT con BOW hecho: https://github.com/bikz05/bag-of-words
+Curso Bag of Words: https://www.youtube.com/watch?v=iGZpJZhqEME&t=1580s
+Bag of Words en Matlab: https://es.mathworks.com/help/vision/ug/image-classification-with-bag-of-visual-words.html
