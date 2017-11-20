@@ -3,6 +3,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 import sys
 import os
+from sklearn.cluster import KMeans
+from sklearn.datasets import make_blobs
+from sklearn.svm import LinearSVC
 
 
 des_list=[]
@@ -64,6 +67,11 @@ def codec(clusters,des_matrix,des_list,n_images_per_node):
     #every row of the matrix represent an image codificated
     return training_data_array
 
+def classifier(training_data_array,clusters):
+    clf=LinearSVC()
+    clf.fit(training_data_array[:,0:clusters],training_data_array[:,clusters])
+    
+    
 #Takes one argument: number of nodes
 def main(argv):
     
