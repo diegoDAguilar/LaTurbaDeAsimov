@@ -11,7 +11,7 @@ import cv2
 from matplotlib import pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.datasets import make_blobs
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 
 #Cargado de las 70 imágenes que se encuentran en el directorio raíz
 raiz="Nodo"
@@ -63,12 +63,12 @@ for f in des_list:
 training_data_array=np.delete(training_data_array,0,0)
 
 #Entrenamiento del clasificador SVM
-clf=SVC()
+clf=LinearSVC()
 clf.fit(training_data_array[:,0:clusters],training_data_array[:,clusters])
 
-#Testeo del clasificador con una imagen
+#Testeo del clasificador con dos imágenes imagen
 
-img2=cv2.imread("Imagen testeo no honesto 3.png",0)
+img2=cv2.imread("imagen testeo real 9.png",0)
 img2=cv2.resize(img2,(800,400))
 kp2,des2=orb.detectAndCompute(img2,None)
 labels2=kmeans.predict(des2)
@@ -80,6 +80,16 @@ print(clf.predict(training_data2))
 
 
 """
+img2=np.array([])
+img2=cv2.drawKeypoints(img,kp,img2,color=(0,255,0),flags=0)
+
+plt.imshow(img2),plt.show()
+
+number_cluster=4
+
+ret=KMeans(n_clusters=number_cluster).fit_predict(des)
+print ret
+
 _,ax=plt.subplots(2)
 ax[0].scatter(des[:,0],des[:,1])
 ax[0].set_title("Initial Scatter Distribution")
@@ -88,6 +98,8 @@ ax[1].set_title("Colored Partition denoting Clusters")
 
 plt.show()
 a,b,c=plt.hist(ret.ravel(),number_cluster,range=(0,number_cluster))
+
+
 """
 
 
