@@ -66,7 +66,7 @@ training_data_array=np.delete(training_data_array,0,0)
 clf=SVC()
 clf.fit(training_data_array[:,0:clusters],training_data_array[:,clusters])
 
-#Testeo del clasificador con dos imágenes imagen
+#Testeo del clasificador con una imagen
 
 img2=cv2.imread("Imagen testeo no honesto 3.png",0)
 img2=cv2.resize(img2,(800,400))
