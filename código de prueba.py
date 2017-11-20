@@ -80,16 +80,6 @@ print(clf.predict(training_data2))
 
 
 """
-img2=np.array([])
-img2=cv2.drawKeypoints(img,kp,img2,color=(0,255,0),flags=0)
-
-plt.imshow(img2),plt.show()
-
-number_cluster=4
-
-ret=KMeans(n_clusters=number_cluster).fit_predict(des)
-print ret
-
 _,ax=plt.subplots(2)
 ax[0].scatter(des[:,0],des[:,1])
 ax[0].set_title("Initial Scatter Distribution")
@@ -98,8 +88,6 @@ ax[1].set_title("Colored Partition denoting Clusters")
 
 plt.show()
 a,b,c=plt.hist(ret.ravel(),number_cluster,range=(0,number_cluster))
-
-
 """
 
 
