@@ -72,7 +72,7 @@ def main(argv):
     print(working_dir)
     for i in range(1,int(sys.argv[1]) + 1):
         extractor(directory = working_dir + '\Dataset\Nodo' + str(i) + '\\', nodo='Nodo' + str(i) + '_')
-   
+    codec(clusters=8,des_matrix=des_array,des_list=des_list,n_images_per_node=70)
     #tratamiento de la supermatriz
     #
 
