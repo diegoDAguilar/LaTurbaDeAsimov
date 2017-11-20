@@ -8,6 +8,7 @@ import os
 from sklearn.cluster import KMeans
 from sklearn.datasets import make_blobs
 from sklearn.svm import LinearSVC
+from sklearn.externals import joblib
 
 
 des_list=[]
@@ -75,6 +76,7 @@ def codec(clusters,des_matrix,des_list,n_images_per_node):
 def classifier(training_data_array,clusters):
     clf=LinearSVC()
     clf.fit(training_data_array[:,0:clusters],training_data_array[:,clusters])
+    return clf
     
     
 #Takes one argument: number of nodes
@@ -91,7 +93,8 @@ def main(argv):
     print('extractor finished')  
     matrix_images_clusters = codec(clusters=n_clusters,des_matrix=des_array,des_list=des_list,n_images_per_node=70)
     print('codec finished')  
-    classifier(matrix_images_clusters,n_clusters) 
+    clf2=classifier(matrix_images_clusters,n_clusters)
+    joblib.dump(clf2, 'classifier.pkl')
     print('classifier finished')
     #tratamiento de la supermatriz
     #
