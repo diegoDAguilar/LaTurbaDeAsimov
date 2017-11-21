@@ -12,14 +12,8 @@ from sklearn.externals import joblib
 
 '''Main'''
 # Read training set
-#testfile = np.load(outfile)
-histogram = np.array([[1, 2], [3, 4], [5,6], [6,7]])
-labels = np.array([1, 2, 2, 1])
+des_list, des_array = extractor(node_directory, des_list, des_array, cod_op = 1)
 
-#Train classifier
-clf = fulltrain (histogram, labels)
 
-#Save classifier
 
-joblib.dump(clf, 'classifier.pkl')
 clf2 = joblib.load('classifier.pkl')
