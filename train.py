@@ -99,7 +99,7 @@ def codec(clusters, des_matrix, des_list, n_images_per_node):
         count+=1
     
     training_data_array = np.delete(training_data_array,0,0)
-    return training_data_array
+    return training_data_array, kmeans
 
 
 #============================================================================================================
@@ -141,9 +141,9 @@ def main(argv):
     print('Extractor finished')
     
     #Codifying (BoW) and generating histograms
-    hist_matrix = codec(n_clusters, des_array, des_list, images_per_node)
+    hist_matrix, BoW = codec(n_clusters, des_array, des_list, images_per_node)
     #Save Bag od Words codification
-    #np.savez('bag_of_words', BoW = BoW) #Nota: Serge llama a la salida de la codificacion BoW
+    joblib.dump(BoW, 'BoW.pkl')
     #Save training set
     np.savez('training_set', hist_matrix = hist_matrix)
     print('Codec finished')  
