@@ -20,5 +20,7 @@ des_array = np.delete(des_array,0,0)
 # Loading the Bag of Words
 BoW = joblib.load('BoW.pkl')
 #Codifying the training set
-test_data = codec_test(BoW, clusters=30,des_list,n=0)
+new_data = codec_test(BoW, clusters=30,des_list,n=0)
+clf=joblib.load('classifier.pkl')
+result=clf.predict(new_data)
 
