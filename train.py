@@ -35,7 +35,6 @@ images_per_node = 70    #Image dataset size
 #  @return        des_list          - List of matrices updated, each matrix will 
 #                                     contain the descriptors of each image 
 #===========================================================================================================
-
 def extractor(directory, des_list, des_array, sizeX = 800, sizeY = 400, cod_op = 0):
     if cod_op == 0:
         #Initializations
@@ -52,7 +51,7 @@ def extractor(directory, des_list, des_array, sizeX = 800, sizeY = 400, cod_op =
             
     elif cod_op == 1:
         des = exOrb(directory, sizeX, sizeY)
-        return des, des_array
+        return des
         
 #============================================================================================================
 #  Method :       exOrb
@@ -64,9 +63,6 @@ def extractor(directory, des_list, des_array, sizeX = 800, sizeY = 400, cod_op =
 # 
 #  @return        des               - Single image feature descriptors
 #===========================================================================================================
-   
-
-
 def exOrb(pic_name, sizeX, sizeY):
         orb = cv2.ORB_create()
         img = cv2.imread(pic_name)
@@ -95,7 +91,7 @@ def exOrb(pic_name, sizeX, sizeY):
 # 
 #  @return        training_data_array   - Histogram + labels training set
 #                                         dimensions: img_numb x (clusters_numb + node_label)
-#  @return        BoW                   - Bag of Words codification   
+#  @return        kmeans                - Bag of Words codification   
 #===========================================================================================================
 def codec(clusters, des_matrix, des_list, n_images_per_node):
 
@@ -167,12 +163,12 @@ def main(argv):
     #des_list, des_array = extractor(node_directory, des_list, des_array, cod_op = 1)
     print('Extractor finished')
     
-     #Codifying (BoW) and generating histograms
+    #Codifying (BoW) and generating histograms
     hist_matrix, BoW = codec(n_clusters, des_array, des_list, images_per_node)
     #Save Bag od Words codification
     joblib.dump(BoW, 'BoW.pkl')
     #Save training set
-    np.savez('training_set', hist_matrix = hist_matrix)
+    np.savez('training_set', hist_matrix = hist_matrix, cluster = n_clusters)
     print('Codec finished')  
     
     #Training classifier
