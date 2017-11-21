@@ -51,7 +51,7 @@ def extractor(directory, des_list, des_array, sizeX = 800, sizeY = 400, cod_op =
             
     elif cod_op == 1:
         des = exOrb(directory, sizeX, sizeY)
-        return des, 0
+        return des
         
 #============================================================================================================
 #  Method :       exOrb
