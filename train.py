@@ -120,6 +120,38 @@ def codec(clusters, des_matrix, des_list, n_images_per_node):
     training_data_array = np.delete(training_data_array,0,0)
     return training_data_array, kmeans
 
+#============================================================================================================
+#  Method :       codec_test
+#
+#  @brief         Codifica las imágenes de testeo
+#
+#  @param         BoW                   - Bolsa de palabras (Clasificador KMeans entrenado)
+#  @param         clusters              - Numero de clusters en el histograma
+#  @param         descriptors           - Descriptores de la imagen 
+#  @param         n                     - n=0:Test con varias imágenes / n=1: Test con una imagen
+#===========================================================================================================
+
+def codec_test(BoW, clusters,descriptors,n=0):
+    #Codification of the images using the words
+    
+    if n == 0:
+        test_data_array = np.zeros((1,clusters))
+        for f in descriptors: 
+            test_data = np.zeros((1,clusters))
+            labels = BoW.predict(f)
+            for j in labels:
+                test_data[0,j]+=1            
+            test_data_array = np.vstack((test_data_array,test_data))
+        
+        test_data_array = np.delete(test_data_array,0,0)
+        return test_data_array
+    
+    elif n == 1:
+        test_data = np.zeros((1,clusters))
+        labels = BoW.predict(descriptors)
+        for j in labels:
+            test_data[0,j]+=1
+        return test_data
 
 #============================================================================================================
 #  Method :       classifier
