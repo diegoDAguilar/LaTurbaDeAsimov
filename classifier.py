@@ -4,17 +4,11 @@ Created on Mon Nov 20 14:51:55 2017
 
 @author: Andres
 """
-
+import cv2
 import numpy as np
-from sklearn.svm import SVC
+from sklearn.cluster import KMeans
+from sklearn.svm import LinearSVC
 from sklearn.externals import joblib
-
-
-def fulltrain (histogram_train, labels_train):
-    clf=SVC()
-    clf.fit(histogram_train, labels_train)
-    return clf
-
 
 '''Main'''
 # Read training set
