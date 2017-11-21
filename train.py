@@ -123,12 +123,12 @@ def codec(clusters, des_matrix, des_list, n_images_per_node):
 #============================================================================================================
 #  Method :       codec_test
 #
-#  @brief         Codifica las imágenes de testeo
+#  @brief         Codifica las imagenes de testeo
 #
 #  @param         BoW                   - Bolsa de palabras (Clasificador KMeans entrenado)
 #  @param         clusters              - Numero de clusters en el histograma
 #  @param         descriptors           - Descriptores de la imagen 
-#  @param         n                     - n=0:Test con varias imágenes / n=1: Test con una imagen
+#  @param         n                     - n=0:Test con varias imagenes / n=1: Test con una imagen
 #===========================================================================================================
 
 def codec_test(BoW, clusters,descriptors,n=0):
