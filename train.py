@@ -50,7 +50,9 @@ def extractor(directory, des_list, des_array, sizeX = 800, sizeY = 400, cod_op =
         return des_list, des_array
             
     elif cod_op == 1:
-        des = exOrb(directory, sizeX, sizeY)
+        image_list = os.listdir(directory)
+        file_name = directory+image_list
+        des = exOrb(file_name, sizeX, sizeY)
         return des
         
 #============================================================================================================
