@@ -1,0 +1,157 @@
+"""
+Training & Preprocessing code
+
+@Team: La turba de Asimov
+"""
+import cv2
+import numpy as np
+from matplotlib import pyplot as plt
+import sys
+import os
+from sklearn.cluster import KMeans
+from sklearn.datasets import make_blobs
+from sklearn.svm import LinearSVC
+from sklearn.externals import joblib
+
+# Global parameters
+n_clusters = 8          #Number of cluster 
+images_per_node = 70    #Image dataset size
+
+#============================================================================================================
+#  Method :       extractor
+#
+#  @brief         Image descriptor generator
+#     
+#  @param         directory         - Numero de clusters en el histograma
+#  @param         des_matrix        - Descriptors matrix 
+#  @param         des_list          - List of matrices, each matrix will contain
+#                                     the descriptors of each image 
+#  @param         sizeX, sizeY      - Image size (default 800x400)
+# 
+#  @return        des_matrix        - Descriptors matrix updated
+#  @return        des_list          - List of matrices updated, each matrix will 
+#                                     contain the descriptors of each image 
+#===========================================================================================================
+def extractor(directory, des_list, des_array, sizeX = 800, sizeY = 400):
+    
+    #Initializations
+    orb = cv2.ORB_create()
+    image_list = os.listdir(directory)
+    
+    #Extracts features from images
+    for i in range(len(image_list)) :
+        #Reads image and sets its size to preset
+        file_name = directory + image_list[i]
+        img = cv2.imread(file_name)
+        #print(file_name)
+        img = cv2.resize(img, (sizeX, sizeY))
+    
+        #Generates a gray image 
+        gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+        gray = np.float32(gray)
+        
+        # find the keypoints with ORB
+        kp = orb.detect(img,None)
+        # compute the descriptors with ORB
+        kp, des = orb.compute(img, kp)
+        des_list.append(des)
+        des_array=np.vstack((des_array,des))
+        
+    return des_list, des_array
+      
+#============================================================================================================
+#  Method :       codec
+#
+#  @brief         Genera el 'back of words' y los histogramas de cada imagen codificados con el BoW
+#     
+#  @param         clusters              - Numero de clusters en el histograma
+#  @param         des_matrix            - Descriptors matrix 
+#  @param         des_list              - List of matrices, each matrix (500x32) will 
+#                                         contain the descriptors of each image
+#  @param         n_images_per_node     - Imagenes por nodo en el dataset
+# 
+#  @return        training_data_array   - Histogram + labels training set
+#                                         dimensions: img_numb x (clusters_numb + node_label)
+#  @return        BoW                   - Bag of Words codification   
+#===========================================================================================================
+def codec(clusters, des_matrix, des_list, n_images_per_node):
+
+    training_data_array = []
+    
+    #Creation of the bag of words
+    kmeans = KMeans(n_clusters=clusters,random_state=0).fit(des_matrix)
+    labels = kmeans.labels_
+    
+    #Codification of the images using the words
+    training_data_array = np.zeros((1,clusters+1))
+    count=0
+    node_class = 1
+    for f in des_list: 
+        training_data = np.zeros((1,clusters))
+        labels = kmeans.predict(f)
+        for j in labels:
+            training_data[0,j]+=1            
+        if count == n_images_per_node:
+            count = 0
+            node_class += 1          
+        training_data = np.append(training_data,np.array([node_class]))
+        training_data_array = np.vstack((training_data_array,training_data))
+        count+=1
+    
+    training_data_array = np.delete(training_data_array,0,0)
+    return training_data_array
+
+
+#============================================================================================================
+#  Method :       classifier
+#
+#  @brief         Entrenamiento del clasificador
+#     
+#  @param         training_set     - Histograma de entrenamiento + Etiquetas
+#  @param         clusters         - Numero de clusters en el histograma
+# 
+#  @return        clf              - Clasificador entrenado
+#===========================================================================================================
+def classifier(training_set, clusters):
+    clf = LinearSVC()
+    clf.fit(training_set[:,0:clusters],training_set[:,clusters])
+    return clf
+    
+#============================================================================================================
+#  MAIN
+#  @argv: number of nodes
+#============================================================================================================   
+def main(argv):
+    
+    #Parameters
+    global n_clusters
+    global images_per_node
+    des_list = []  
+    des_array = np.zeros((1,32))
+    
+    #Get directory
+    working_dir = os.getcwd()
+    print(working_dir)
+    
+    #Extracting features from dataset
+    for i in range(1,int(sys.argv[1]) + 1):
+        node_directory = working_dir + '\Dataset\Nodo' + str(i) + '\\'
+        des_list, des_array = extractor(node_directory, des_list, des_array)
+    des_array = np.delete(des_array,0,0) #Remove the zeros inicialization
+    print('Extractor finished')
+    
+    #Codifying (BoW) and generating histograms
+    hist_matrix = codec(n_clusters, des_array, des_list, images_per_node)
+    #Save Bag od Words codification
+    #np.savez('bag_of_words', BoW = BoW) #Nota: Serge llama a la salida de la codificacion BoW
+    #Save training set
+    np.savez('training_set', hist_matrix = hist_matrix)
+    print('Codec finished')  
+    
+    #Training classifier
+    clf = classifier(hist_matrix, n_clusters)
+    joblib.dump(clf, 'classifier.pkl')
+    print('Classifier saved')
+
+if __name__ == "__main__":
+    main(sys.argv) 
