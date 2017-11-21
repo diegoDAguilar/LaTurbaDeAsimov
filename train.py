@@ -167,10 +167,10 @@ def main(argv):
     #des_list, des_array = extractor(node_directory, des_list, des_array, cod_op = 1)
     print('Extractor finished')
     
-    #Codifying (BoW) and generating histograms
-    hist_matrix = codec(n_clusters, des_array, des_list, images_per_node)
+     #Codifying (BoW) and generating histograms
+    hist_matrix, BoW = codec(n_clusters, des_array, des_list, images_per_node)
     #Save Bag od Words codification
-    np.savez('bag_of_words', BoW = BoW) #Nota: Serge llama a la salida de la codificacion BoW
+    joblib.dump(BoW, 'BoW.pkl')
     #Save training set
     np.savez('training_set', hist_matrix = hist_matrix)
     print('Codec finished')  
