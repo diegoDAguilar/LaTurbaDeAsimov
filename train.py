@@ -122,7 +122,7 @@ def codec(clusters, des_matrix, des_list, n_images_per_node):
         count+=1
     
     training_data_array = np.delete(training_data_array,0,0)
-    return training_data_array
+    return training_data_array, BoW
 
 
 #============================================================================================================
